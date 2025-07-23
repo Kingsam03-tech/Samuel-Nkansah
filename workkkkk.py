@@ -11,9 +11,9 @@ team = input("What is your favourite soccer team? ")
 
 # summary
 print("\n--- Customized Summary ---")
-print(f"Nice to meet you, {name}!")
-print(f"You are {age} years old, and your favourite colour is {colour}.")
-print(f"You love eating {food}, and you attended {school}.")
-print(f"Wow , your favourite team is {team}.")
+print("Nice to meet you, {name}!")
+print("You are {age} years old, and your favourite colour is {colour}.")
+print("You love eating {food}, and you attended {school}.")
+print("Wow , your favourite team is {team}.")
 print("Thanks for sharing!")
 
