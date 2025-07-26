@@ -1,0 +1,117 @@
+# Samuel-Nkansah 
+import random
+import os
+
+def get_user_input(prompt):
+    """Helper function to get string input from the user."""
+    return input(prompt).strip()
+
+def get_valid_rating():
+    """Helper function to get a validated 1-5 star rating."""
+    while True:
+        try:
+            rating = int(input("On a scale of 1 to 5 stars, how fun was this assistant? (1-5): "))
+            if 1 <= rating <= 5:
+                return rating
+            else:
+                print("Please enter a number between 1 and 5.")
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+def collect_personal_details():
+    """Collects personal details from the user with randomized questions."""
+    print("\n--- Let's get to know you! ---")
+
+    user_data = {}
+
+    # Always ask for name first for file naming
+    user_data['name'] = get_user_input("What is your name? ")
+
+    # Define the questions and their keys
+    questions = [
+        ('age', "How old are you? "),
+        ('favorite_color', "What's your favorite color? "),
+        ('favorite_food', "What's your favorite food? "),
+        ('city', "Which city do you live in? "),
+        ('shs_attended', "Which Senior High School did you attend? "),
+        ('favorite_soccer_team', "Who is your favorite soccer team? "),
+        ('dream_destination', "What's your dream travel destination? "),
+        ('favorite_hobby', "What's a hobby you enjoy? ")
+    ]
+
+    # Randomize the order of questions
+    random.shuffle(questions)
+
+    # Ask the randomized questions
+    for key, prompt in questions:
+        user_data[key] = get_user_input(prompt)
+
+    return user_data
+
+def generate_fun_summary(user_data):
+    """Generates a personalized and fun summary."""
+    name = user_data.get('name', 'there')
+    age = user_data.get('age', 'an unknown number of years')
+    color = user_data.get('favorite_color', 'every color in the rainbow')
+    food = user_data.get('favorite_food', 'a delicious mystery meal')
+    city = user_data.get('city', 'a secret location')
+    shs = user_data.get('shs_attended', 'a prestigious academy')
+    team = user_data.get('favorite_soccer_team', 'a team of champions')
+    destination = user_data.get('dream_destination', 'somewhere absolutely magical')
+    hobby = user_data.get('favorite_hobby', 'exploring new things')
+
+    summary_messages = [
+        f"Hello {name}! You're {age} years young, with a heart as vibrant as {color}.",
+        f"Your love for {food} truly shines, and life must be awesome in {city}!",
+        f"It's fascinating you attended {shs} – that's a great legacy!",
+        f"And cheering for {team}? You've got great taste!",
+        f"Imagine you, exploring {destination} – sounds like an incredible adventure!",
+        f"It's cool that you enjoy {hobby} in your free time. Keep having fun!"
+    ]
+
+    # Shuffle the summary messages for a varied output
+    random.shuffle(summary_messages)
+
+    full_summary = f"\n--- Your Fun Personalized Summary ---\n"
+    for msg in summary_messages:
+        full_summary += f"{msg}\n"
+    full_summary += "--------------------------------------"
+    
+    return full_summary
+
+def save_summary_and_rating(user_data, summary, rating):
+    """Saves the summary and rating to a text file named after the user."""
+    filename = f"{user_data['name'].replace(' ', '_').lower()}.txt" # Creates a safe filename
+    
+    try:
+        with open(filename, 'a') as f: # Use 'a' for append mode
+            f.write(f"\n--- Summary for {user_data['name']} (Generated on {os.path.basename(os.getcwd())} {os.path.basename(__file__)}) ---\n")
+            f.write(summary + "\n")
+            f.write(f"Assistant Rating: {rating} out of 5 stars \n")
+            f.write("-" * 50 + "\n")
+        print(f"Great! Your summary and rating have been saved to '{filename}'.")
+    except IOError as e:
+        print(f"Oops! Could not save the summary to a file. Error: {e}")
+
+def main():
+    """Main function to run the command-line tool."""
+    print("Welcome to the Personalized Summary Generator!")
+    print("I'll ask you a few fun questions and create a unique summary just for you.")
+
+    while True:
+        user_details = collect_personal_details()
+        summary = generate_fun_summary(user_details)
+        print(summary)
+
+        save_choice = get_user_input("\nWould you like to save this summary to a file? (yes/no): ").lower()
+        if save_choice == 'yes':
+            rating = get_valid_rating()
+            save_summary_and_rating(user_details, summary, rating)
+        else:
+            print("No problem! Your summary was not saved.")
+
+        restart_choice = get_user_input("\nWould you like to restart and create another summary? (yes/no): ").lower()
+        if restart_choice != 'yes':
+            print("Thanks for using the Personalized Summary Generator! Goodbye!")
+            break
+
